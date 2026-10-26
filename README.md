@@ -14,7 +14,7 @@ const CONFIG = {
   music: "media/song.mp3"      // <- tamaru gamtu song media folder ma "song.mp3" naame muko
 };
 ```
-Song na muko to music button aapo-aap chhupai jase.
+Song na muko to music button ane "vinyl record" vali screen aapo-aap chhupai jase. Song mukso to record par photo sathe gaanu vagse.
 
 ## 2. GitHub Pages par upload
 1. github.com par login -> **New repository** -> naam: `Pehli-Varshganth` -> **Public** -> Create.

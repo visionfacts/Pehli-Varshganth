@@ -277,6 +277,22 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
   animation:floatup 30s linear infinite}
 @keyframes floatup{to{background-position:0 -600px}}
 .screen > .in{position:relative;z-index:1}
+/* ---------- thank you ---------- */
+.ty-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;margin-top:1.1rem;perspective:900px}
+.ty{position:relative;aspect-ratio:1/1.05;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,.2,.2,1)}
+.ty.flip{transform:rotateY(180deg)}
+.ty > span{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.8rem;text-align:center}
+.ty .f{background:linear-gradient(160deg,#FFF6EE,#F9E1E6);color:var(--sindoor-deep);box-shadow:0 10px 22px rgba(0,0,0,.3);border:1px solid rgba(226,176,74,.6)}
+.ty .f small{font-size:.8rem;letter-spacing:.08em;color:#A0606F}
+.ty .f em{font-family:var(--script);font-style:normal;font-size:1.65rem;line-height:1.05;margin-top:.2rem}
+.ty .f i{font-style:normal;font-size:1.3rem;margin-top:.3rem}
+.ty .b{transform:rotateY(180deg);background:linear-gradient(160deg,#E2B04A,#C9902C);color:#3A1A06;font-size:.98rem;line-height:1.4;box-shadow:0 10px 22px rgba(0,0,0,.3)}
+.ty-final{margin-top:1.4rem;opacity:0;transform:scale(.7);transition:all .8s cubic-bezier(.3,1.5,.5,1)}
+.ty-final.show{opacity:1;transform:none}
+.ty-final b{display:block;font-family:var(--script);font-weight:400;font-size:4rem;line-height:1;color:var(--marigold-2)}
+.ty-final span{color:#FFE1EA}
+@media(min-width:620px){.ty-grid{grid-template-columns:repeat(4,1fr)}}
+
 #petals{position:fixed;inset:0;pointer-events:none;z-index:55}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}}
 </style>
@@ -472,7 +488,7 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
 </section>
 
 <!-- 12 : wish jar -->
-<section class="screen s-paper" id="s12" data-theme="paper" data-next="One last thing">
+<section class="screen s-paper" id="s12" data-theme="paper" data-next="A big thank you">
   <div class="in">
     <p class="kicker">nani nani chitthio, tamara mate</p>
     <h2 class="script">Pick One Out</h2>
@@ -482,6 +498,17 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
   </div>
 </section>
 <div class="slipout" id="slip"><div id="slipText"></div><button class="putback" id="putback">Put it back</button></div>
+
+<!-- 12b : thank you -->
+<section class="screen s-teal" id="sThanks" data-theme="wine" data-next="One last thing">
+  <div class="in">
+    <p class="kicker">dil thi aabhar</p>
+    <h2 class="script">Thank You, Bhai &amp; Bhabhi</h2>
+    <p class="lede small">Dar card par tap karo 💌</p>
+    <div class="ty-grid" id="tyGrid"></div>
+    <div class="ty-final" id="tyFinal"><b>Thank You</b><span>for everything, for always ❤️</span></div>
+  </div>
+</section>
 
 <!-- 13 : last -->
 <section class="screen s-red" id="s13" data-theme="red" data-next="Replay from the start">
@@ -816,6 +843,28 @@ const NOTES=[
 onEnter.s13=()=>burst(70);
 onEnter.s9=()=>{const v=document.getElementById('reel');v.currentTime=0;v.play().catch(()=>{});};
 const _go=go; go=function(i){ if(screens[cur].id==='s12'&&screens[i]?.id!=='s12')document.getElementById('slip').classList.remove('show'); _go(i); };
+
+/* ---------- thank you cards ---------- */
+const THANKS=[
+ ['Bhai','for always being my safe place','Nanpan thi aaj sudhi, tame hamesha mari dhaal banya. Dar mushkel vakhate pehlo phone tamne j karu chhu.','🛡️'],
+ ['Bhabhi','for loving Bhai so beautifully','Emne aatla khush, aatla shant pehla kyarey nahota joya. E badhu tamara lidhe chhe.','💞'],
+ ['Bhabhi','for becoming my sister','Tame khali bhabhi nahi, mari bahen, mari secret-keeper ane mari shopping partner banya.','👭'],
+ ['Both of you','for making our home happier','Tamara aavya pachhi ghar ma hasi, vaato ane ronak bamni thai gayi chhe.','🏡'],
+ ['Both of you','for every chai and late-night talk','E nani nani vaato, masti ane chai na cup mara mate sauthi kimti yaado chhe.','☕'],
+ ['Bhai','for still taking my side','Lagna pachhi pan, dar jhagda ma. Ane haan, aa rule kyarey nahi badlay. 😄','🤝'],
+ ['Both of you','for showing me what real love looks like','Saathe ubha rehvu, ek bija ne samajvu, ane dar divas ek bija ne pasand karvu.','❤️'],
+ ['Both of you','for always keeping a place for me','Tamara ghar ma ane tamara dil ma, mara mate hamesha jagya rakhva mate.','🫶']
+];
+(function(){
+  const g=document.getElementById('tyGrid'),fin=document.getElementById('tyFinal'),seen=new Set();
+  THANKS.forEach(([who,what,why,ic],i)=>{
+    const b=document.createElement('button');b.className='ty';b.setAttribute('aria-label','Thank you '+who+' '+what);
+    b.innerHTML=`<span class="f"><small>${who}, thank you</small><em>${what}</em><i>${ic}</i></span><span class="b">${why}</span>`;
+    b.onclick=()=>{b.classList.toggle('flip');seen.add(i);if(seen.size===THANKS.length&&!fin.classList.contains('show')){fin.classList.add('show');burst(70);}};
+    g.appendChild(b);
+  });
+  onEnter.sThanks=()=>{};
+})();
 
 /* ---------- petals ---------- */
 const pc=document.getElementById('petals'),px=pc.getContext('2d');let petals=[],running=false;
