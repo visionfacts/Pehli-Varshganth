@@ -255,16 +255,51 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
 .flyemo{position:fixed;z-index:58;font-size:2rem;pointer-events:none;animation:fly 1.1s ease-out forwards}
 @keyframes fly{to{transform:translateY(-160px) scale(1.6);opacity:0}}
 
-/* ---------- 12 jar ---------- */
-.jar{position:relative;width:min(56vw,13rem);aspect-ratio:3/4;margin:1.8rem auto 0;cursor:pointer}
-.jar .lid{position:absolute;left:14%;right:14%;top:-6%;height:12%;border-radius:6px;background:repeating-linear-gradient(90deg,#C9923E 0 6px,#B07A2C 6px 9px);transform:rotate(-8deg);box-shadow:0 4px 8px rgba(0,0,0,.2);transition:transform .5s}
-.jar.opened .lid{transform:translate(-40%,-60%) rotate(-30deg)}
-.jar .glass{position:absolute;inset:4% 0 0 0;border-radius:18% 18% 14% 14%/10% 10% 8% 8%;background:linear-gradient(90deg,rgba(255,255,255,.55),rgba(255,255,255,.18) 30%,rgba(255,255,255,.08) 70%,rgba(255,255,255,.4));border:2px solid rgba(160,140,120,.45);overflow:hidden;box-shadow:inset 0 -10px 20px rgba(160,140,120,.2)}
-.jar .slip{position:absolute;width:30%;height:9%;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,.15)}
-.slipout{position:fixed;left:50%;top:50%;z-index:60;width:min(84vw,20rem);padding:1.4rem 1.3rem;border-radius:4px;color:var(--ink);font-size:1.2rem;line-height:1.5;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.35);
-  transform:translate(-50%,-50%) scale(.2) rotate(-12deg);opacity:0;transition:all .55s cubic-bezier(.3,1.4,.5,1);pointer-events:none}
-.slipout.show{transform:translate(-50%,-50%) scale(1) rotate(-2deg);opacity:1;pointer-events:auto}
-.slipout .putback{display:inline-block;margin-top:1rem;font-size:.9rem;padding:.35rem 1rem;border-radius:999px;background:var(--ink);color:var(--ivory)}
+/* ---------- 12 memory match ---------- */
+.mstat{display:flex;justify-content:center;gap:1.2rem;font-weight:600;color:var(--sindoor-deep);margin:.4rem 0 .2rem}
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;max-width:24rem;margin:.6rem auto 0;perspective:800px}
+.mc{position:relative;aspect-ratio:3/4;transform-style:preserve-3d;transition:transform .45s}
+.mc.up,.mc.ok{transform:rotateY(180deg)}
+.mc > span{position:absolute;inset:0;border-radius:10px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;box-shadow:0 6px 14px rgba(59,26,18,.2)}
+.mc .bk{display:grid;place-items:center;font-size:1.7rem;border:2px solid var(--marigold)}
+.mc .fr{transform:rotateY(180deg);background:#fff}
+.mc .fr img{width:100%;height:100%;object-fit:cover}
+.mc.ok .fr{box-shadow:0 0 0 3px var(--marigold),0 6px 14px rgba(59,26,18,.2)}
+.mc.ok{animation:okpop .5s .3s}
+@keyframes okpop{50%{transform:rotateY(180deg) scale(1.08)}}
+.mc.no{animation:shake .4s}
+@keyframes shake{25%{translate:-5px}75%{translate:5px}}
+
+/* ---------- puzzle ---------- */
+.pz{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;width:min(78vw,19rem);aspect-ratio:2/3;margin:.8rem auto 0;padding:3px;background:var(--marigold);border-radius:10px;box-shadow:0 14px 30px rgba(0,0,0,.35);touch-action:manipulation}
+.pz.solved{gap:0;padding:0;transition:gap .5s,padding .5s}
+.tile{background-size:300% 300%;border-radius:4px;transition:transform .15s,box-shadow .15s}
+.pz.solved .tile{border-radius:0}
+.tile.sel{transform:scale(.9);box-shadow:0 0 0 3px #fff,0 0 0 6px var(--sindoor)}
+.pzbar{display:flex;justify-content:center;gap:.7rem;margin-top:1rem;align-items:center;color:var(--ivory-dim);font-weight:600}
+.peek{padding:.4rem 1rem;border-radius:999px;border:1px solid rgba(246,213,138,.6);color:var(--marigold-2);font-size:.95rem}
+.pzpeek{position:absolute;inset:0;background-size:cover;background-position:center;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .25s}
+.pzwrap{position:relative;width:min(78vw,19rem);margin:0 auto}
+.pzwrap.peeking .pzpeek{opacity:1}
+
+/* ---------- win overlay ---------- */
+#win{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:1.2rem;background:rgba(40,4,14,.82);opacity:0;visibility:hidden;transition:opacity .4s,visibility 0s .4s}
+#win.show{opacity:1;visibility:visible;transition:opacity .4s}
+.wbox{width:min(88vw,22rem);text-align:center;color:var(--ivory)}
+.trophy{font-size:4.5rem;line-height:1;animation:tro 1s cubic-bezier(.3,1.6,.5,1)}
+@keyframes tro{from{transform:scale(0) rotate(-30deg)}}
+.wbox h3{font-family:var(--script);font-weight:400;font-size:3.2rem;line-height:1.05;color:var(--marigold-2);margin:.2rem 0}
+.wbox .wsub{color:#FFE1EA}
+.gift{display:block;margin:1.2rem auto .4rem;font-size:4.2rem;animation:wob 1.2s infinite}
+@keyframes wob{0%,100%{transform:rotate(0)}20%{transform:rotate(-10deg) scale(1.05)}40%{transform:rotate(10deg) scale(1.05)}60%{transform:rotate(0)}}
+.gifthint{font-size:.95rem;color:var(--marigold-2)}
+.wphoto{display:none;width:min(62vw,14rem);aspect-ratio:3/4;object-fit:cover;margin:1rem auto .6rem;border-radius:999px 999px 10px 10px;border:3px solid var(--marigold-2);animation:reveal .7s cubic-bezier(.3,1.4,.5,1)}
+@keyframes reveal{from{transform:scale(.3) rotate(8deg);opacity:0}}
+.wmsg{display:none;font-family:var(--display);font-size:1.35rem;color:var(--marigold-2);line-height:1.3}
+#win.open .gift,#win.open .gifthint{display:none}
+#win.open .wphoto,#win.open .wmsg{display:block}
+#winGo{margin-top:1.1rem;display:none}
+#win.open #winGo{display:inline-flex}
 
 /* ---------- 13 last ---------- */
 #s13 .portrait{width:min(56vw,13rem);aspect-ratio:3/4;object-fit:cover;margin:0 auto 1.4rem;border-radius:999px 999px 8px 8px;border:3px solid var(--marigold-2);box-shadow:0 0 0 8px rgba(255,201,74,.15)}
@@ -473,9 +508,9 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
 </section>
 
 <!-- 11 : game -->
-<section class="screen s-paper" id="s11" data-theme="paper" data-next="The wish jar">
+<section class="screen s-paper" id="s11" data-theme="paper" data-next="Next game 🎮">
   <div class="in">
-    <p class="kicker">chalo, ek nani game 🎮</p>
+    <p class="kicker">game 1 · chalo ramiye 🎮</p>
     <h2 class="script">Kon Vadhare?</h2>
     <div id="qPlay">
       <div class="qcard">
@@ -498,26 +533,25 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
   </div>
 </section>
 
-<!-- 12 : wish jar -->
-<section class="screen s-paper" id="s12" data-theme="paper" data-next="A big thank you">
+<!-- 12 : memory match -->
+<section class="screen s-paper" id="s12" data-theme="paper" data-next="Last game 🧩">
   <div class="in">
-    <p class="kicker">nani nani chitthio, tamara mate</p>
-    <h2 class="script">Pick One Out</h2>
-    <div class="jar" id="jar" role="button" tabindex="0" aria-label="Take a note from the jar"><div class="lid"></div><div class="glass" id="glass"></div></div>
-    <p style="margin-top:1rem;color:#6B3A2A">Barni par tap kari ne ek chitthi kadho</p>
-    <p class="small" id="jarCount" style="color:#8A6A5A">0 notes read</p>
+    <p class="kicker">game 2 · jodi shodho</p>
+    <h2 class="script">Memory Match</h2>
+    <p class="lede small">Be card kholo, same photo ni jodi banavo 💑</p>
+    <div class="mstat"><span id="mPairs">0 / 6 jodi</span><span id="mMoves">0 moves</span></div>
+    <div class="mgrid" id="mGrid"></div>
   </div>
 </section>
-<div class="slipout" id="slip"><div id="slipText"></div><button class="putback" id="putback">Put it back</button></div>
 
-<!-- 12b : thank you -->
+<!-- 12b : photo puzzle -->
 <section class="screen s-teal" id="sThanks" data-theme="wine" data-next="One last thing">
   <div class="in">
-    <p class="kicker">dil thi aabhar</p>
-    <h2 class="script">Thank You, Bhai &amp; Bhabhi</h2>
-    <p class="lede small">Dar card par tap karo 💌</p>
-    <div class="ty-grid" id="tyGrid"></div>
-    <div class="ty-final" id="tyFinal"><b>Thank You</b><span>for everything, for always ❤️</span></div>
+    <p class="kicker">game 3 · chhello level</p>
+    <h2 class="script">Photo Puzzle</h2>
+    <p class="lede small">Be tukda par tap karo, jagya badlai jase 🧩</p>
+    <div class="pzwrap" id="pzWrap"><div class="pz" id="pz"></div><div class="pzpeek" style="background-image:url(images/wed-10.jpg)"></div></div>
+    <div class="pzbar"><span id="pzMoves">0 moves</span><button class="peek" id="pzPeek">👀 Dabavi ne juo</button><button class="peek" id="pzShuf">↻</button></div>
   </div>
 </section>
 
@@ -533,6 +567,19 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
     <p class="sign">Hamesha tamari,<b id="fromName">Drashti</b></p>
   </div>
 </section>
+
+<div id="win" role="dialog" aria-modal="true" aria-label="You won">
+  <div class="wbox">
+    <div class="trophy">🏆</div>
+    <h3 id="winT">Tame jitya!</h3>
+    <p class="wsub" id="winS"></p>
+    <button class="gift" id="gift" aria-label="Open the surprise">🎁</button>
+    <p class="gifthint">Surprise kholva tap karo</p>
+    <img class="wphoto" id="winP" alt="">
+    <p class="wmsg" id="winM"></p>
+    <button class="btn gold" id="winGo">Aagal vadho →</button>
+  </div>
+</div>
 
 <nav id="nav"><button class="pill back" id="back">Back</button><button class="pill next" id="next">Continue</button></nav>
 
@@ -743,13 +790,13 @@ const SHOTS=[
 
 /* ---------- 8 saat phera ---------- */
 const VOWS=[
-  {g:"પહેલો ફેરો: ઘરમાં અન્ન અને મનમાં સંતોષ સદાય રહે.",e:"May your kitchen never run short of food, your table never short of laughter."},
-  {g:"બીજો ફેરો: એકબીજાની તાકાત બનીને રહેજો.",e:"On the days one of you is tired, may the other be strong enough for both."},
-  {g:"ત્રીજો ફેરો: મહેનતનું ફળ અને ઘરમાં લક્ષ્મી સદાય રહે.",e:"May every effort you make together come back to you as blessings."},
-  {g:"ચોથો ફેરો: બંને પરિવારનો પ્રેમ અને માન સદાય મળે.",e:"Two families became one because of you. May they keep growing closer."},
-  {g:"પાંચમો ફેરો: તમારું ઘર હાસ્ય અને કિલકિલાટથી ભરાઈ જાય.",e:"May your home always be loud, the happy kind of loud."},
-  {g:"છઠ્ઠો ફેરો: દરેક ઋતુમાં સારું સ્વાસ્થ્ય અને એકબીજાનો સાથ.",e:"Through every season, healthy and side by side."},
-  {g:"સાતમો ફેરો: પતિ-પત્ની પહેલાં, હંમેશા સૌથી સારા મિત્રો.",e:"Above everything, stay best friends. That’s the real secret."}
+  {g:"પહેલો ફેરો: ઘરમાં અન્ન અને મનમાં સંતોષ સદાય રહે.",e:""},
+  {g:"બીજો ફેરો: એકબીજાની તાકાત બનીને રહેજો.",e:""},
+  {g:"ત્રીજો ફેરો: મહેનતનું ફળ અને ઘરમાં લક્ષ્મી સદાય રહે.",e:""},
+  {g:"ચોથો ફેરો: બંને પરિવારનો પ્રેમ અને માન સદાય મળે.",e:""},
+  {g:"પાંચમો ફેરો: તમારું ઘર હાસ્ય અને કિલકિલાટથી ભરાઈ જાય.",e:""},
+  {g:"છઠ્ઠો ફેરો: દરેક ઋતુમાં સારું સ્વાસ્થ્ય અને એકબીજાનો સાથ.",e:""},
+  {g:"સાતમો ફેરો: પતિ-પત્ની પહેલાં, હંમેશા સૌથી સારા મિત્રો.",e:""}
 ];
 (function(){
   const ring=document.getElementById('ring'),walker=document.getElementById('walker'),arc=document.getElementById('ringDone'),done=new Set();let angle=0;
@@ -768,6 +815,16 @@ const rec=document.getElementById('record'),arm=document.getElementById('arm'),v
 function syncVinyl(){const on=audio&&!audio.paused;rec.classList.toggle('spin',on);arm.classList.toggle('on',on);vb.textContent=on?'❚❚ Pause':'▶ Play our song';}
 vb.onclick=()=>{if(audio)audio.paused?audio.play():audio.pause();};
 onEnter.s10=syncVinyl;
+
+/* ---------- winner + surprise overlay ---------- */
+const win=document.getElementById('win');
+function showWin(title,sub,photo,msg){
+  document.getElementById('winT').textContent=title;document.getElementById('winS').textContent=sub;
+  document.getElementById('winP').src='images/'+photo+'.jpg';document.getElementById('winM').innerHTML=msg;
+  win.classList.remove('open');win.classList.add('show');burst(90);
+}
+document.getElementById('gift').onclick=()=>{win.classList.add('open');burst(120);};
+document.getElementById('winGo').onclick=()=>{win.classList.remove('show','open');step(1);};
 
 /* ---------- 11 game: kon vadhare ---------- */
 const QUIZ=[
@@ -790,7 +847,8 @@ const REACT=['Sachu j! 😂','Objection noted 🤭','Aa to badha jaane chhe 😄
     e.style.left=(r.left+r.width/2-16)+'px';e.style.top=(r.top)+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),1200);}
   function finish(){play.hidden=true;endB.hidden=false;
     document.getElementById('scG').textContent=g;document.getElementById('scD').textContent=d;
-    document.getElementById('qVerdict').textContent=g===d?'Barobar takkar! 💯':(g>d?CONFIG.groom:CONFIG.bride)+' jitya! 😂';burst(70);}
+    document.getElementById('qVerdict').textContent=g===d?'Barobar takkar! 💯':(g>d?CONFIG.groom:CONFIG.bride)+' jitya! 😂';burst(70);
+    setTimeout(()=>showWin('Game 1 complete!','Score '+g+' – '+d,'hero','Score game ma,<br>pan jodi to 10/10! 💯'),1400);}
   document.querySelectorAll('#s11 [data-w]').forEach(b=>b.onclick=()=>{
     if(lock)return;lock=true;const w=b.dataset.w;
     if(w==='g'||w==='x')g++; if(w==='d'||w==='x')d++;
@@ -803,55 +861,58 @@ const REACT=['Sachu j! 😂','Objection noted 🤭','Aa to badha jaane chhe 😄
   reset();
 })();
 
-/* ---------- 12 wish jar ---------- */
-const NOTES=[
- "Bhai, Bhabhi aavya pachhi tame vadhu hasta thaya chho. Notice karyu chhe!",
- "Bhabhi, Bhai na badha drama sahan karva mate tamne medal malvo joie. 🏅",
- "સદાય સુખી રહો, સદાય સાથે રહો.",
- "Ochha jhagda, vadhu chai saathe. ☕",
- "Nazar na lage aa jodi ne. 🧿",
- "Gharda thaya pachhi pan aam j haath pakdi ne chaljo.",
- "ભગવાન તમારા ઘરમાં ખુશીઓની ભરમાર કરે.",
- "Aghra divase dhiraj, ane badha divase hasi.",
- "Jug jug jiyo, banne. ❤️"
-];
+/* ---------- 12 memory match ---------- */
 (function(){
-  const glass=document.getElementById('glass'),jar=document.getElementById('jar'),slip=document.getElementById('slip'),st=document.getElementById('slipText'),cnt=document.getElementById('jarCount');
-  const C=['#F6C1CB','#FFE08A','#F9D3A5','#CFE3B4','#FFFFFF','#F3B6A0'];
-  for(let i=0;i<14;i++){const s=document.createElement('span');s.className='slip';s.style.background=C[i%C.length];
-    s.style.left=(8+Math.random()*58)+'%';s.style.bottom=(4+Math.floor(i/3)*9+Math.random()*4)+'%';s.style.transform=`rotate(${Math.random()*70-35}deg)`;glass.appendChild(s);}
-  let order=NOTES.map((_,i)=>i).sort(()=>Math.random()-.5),k=0;const seen=new Set();
-  function take(){if(slip.classList.contains('show'))return;jar.classList.add('opened');const idx=order[k%order.length];k++;seen.add(idx);
-    st.textContent=NOTES[idx];slip.style.background=C[idx%C.length];setTimeout(()=>slip.classList.add('show'),250);
-    cnt.textContent=seen.size===NOTES.length?'Badhi chitthio vanchai gai! 🎉':seen.size+' of '+NOTES.length+' notes read';burst(18);}
-  jar.onclick=take;jar.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();take();}};
-  document.getElementById('putback').onclick=()=>{slip.classList.remove('show');jar.classList.remove('opened');};
-  onEnter.s12=()=>{slip.classList.remove('show');jar.classList.remove('opened');};
+  const PICS=['begin-4','pre-5','wed-5','wed-9','twirl-2','mehndi-2'];
+  const grid=document.getElementById('mGrid'),pe=document.getElementById('mPairs'),me=document.getElementById('mMoves');
+  let open=[],pairs=0,moves=0,lock=false;
+  PICS.forEach(f=>{const im=new Image();im.src='images/'+f+'.jpg';});
+  function deal(){
+    grid.innerHTML='';open=[];pairs=0;moves=0;lock=false;upd();
+    const deck=[...PICS,...PICS].sort(()=>Math.random()-.5);
+    deck.forEach(f=>{const c=document.createElement('button');c.className='mc';c.dataset.f=f;c.setAttribute('aria-label','Card');
+      c.innerHTML=`<span class="bk bandhani">💍</span><span class="fr"><img src="images/${f}.jpg" alt="" draggable="false"></span>`;
+      c.onclick=()=>flip(c);grid.appendChild(c);});
+  }
+  function upd(){pe.textContent=pairs+' / '+PICS.length+' jodi';me.textContent=moves+' moves';}
+  function flip(c){
+    if(lock||c.classList.contains('up')||c.classList.contains('ok'))return;
+    c.classList.add('up');open.push(c);
+    if(open.length<2)return;
+    moves++;const[a,b]=open;open=[];
+    if(a.dataset.f===b.dataset.f){pairs++;setTimeout(()=>{a.classList.add('ok');b.classList.add('ok');a.classList.remove('up');b.classList.remove('up');burst(15);},350);
+      upd();if(pairs===PICS.length)setTimeout(()=>showWin('Perfect Match!',moves+' moves ma badhi jodi mali 🎉','wed-3','Perfect match,<br>jem tame banne! 💑'),1100);}
+    else{lock=true;upd();setTimeout(()=>{a.classList.add('no');b.classList.add('no');},450);
+      setTimeout(()=>{a.classList.remove('up','no');b.classList.remove('up','no');lock=false;},1000);}
+  }
+  deal();
+  onEnter.s12=()=>{if(pairs===PICS.length)deal();};
 })();
 onEnter.s13=()=>burst(70);
 onEnter.s9=()=>{const v=document.getElementById('reel');v.currentTime=0;v.play().catch(()=>{});};
-const _go=go; go=function(i){ if(screens[cur].id==='s12'&&screens[i]?.id!=='s12')document.getElementById('slip').classList.remove('show'); _go(i); };
 
-/* ---------- thank you cards ---------- */
-const THANKS=[
- ['Bhai','for always being my safe place','Dar mushkel vakhate pehlo phone tamne j. 📞','🛡️'],
- ['Bhabhi','for loving Bhai so beautifully','Bhai aatla khush pehla kyarey nahota! 😊','💞'],
- ['Bhabhi','for becoming my friend','Tame khali bhabhi nahi, mari friend ane shopping partner banya. 🛍️','👭'],
- ['Both of you','for making our home happier','Ghar ma hasi bamni thai gayi! 😄','🏡'],
- ['Both of you','for every chai and late-night talk','E chai ane vaato, sauthi kimti. ☕','☕'],
- ['Bhai','for still taking my side','Aa rule kyarey nahi badlay! 😄','🤝'],
- ['Both of you','for showing me what real love looks like','Saathe rehvu, ek bija ne samajvu. ❤️','❤️'],
- ['Both of you','for always keeping a place for me','Ghar ma ane dil ma, mara mate jagya. 🫶','🫶']
-];
+
+/* ---------- photo puzzle ---------- */
 (function(){
-  const g=document.getElementById('tyGrid'),fin=document.getElementById('tyFinal'),seen=new Set();
-  THANKS.forEach(([who,what,why,ic],i)=>{
-    const b=document.createElement('button');b.className='ty';b.setAttribute('aria-label','Thank you '+who+' '+what);
-    b.innerHTML=`<span class="f"><small>${who}, thank you</small><em>${what}</em><i>${ic}</i></span><span class="b">${why}</span>`;
-    b.onclick=()=>{b.classList.toggle('flip');seen.add(i);if(seen.size===THANKS.length&&!fin.classList.contains('show')){fin.classList.add('show');burst(70);}};
-    g.appendChild(b);
-  });
-  onEnter.sThanks=()=>{};
+  const pz=document.getElementById('pz'),mv=document.getElementById('pzMoves'),wrap=document.getElementById('pzWrap');
+  let order=[],sel=null,moves=0,done=false;
+  function render(){pz.innerHTML='';order.forEach((t,pos)=>{const d=document.createElement('button');d.className='tile';
+    d.style.backgroundImage='url(images/wed-10.jpg)';d.style.backgroundPosition=(t%3)*50+'% '+Math.floor(t/3)*50+'%';
+    d.setAttribute('aria-label','Tile '+(pos+1));d.onclick=()=>tap(pos);pz.appendChild(d);});}
+  function shuffle(){done=false;pz.classList.remove('solved');moves=0;sel=null;mv.textContent='0 moves';
+    do{order=[...Array(9).keys()].sort(()=>Math.random()-.5);}while(order.every((t,i)=>t===i));render();}
+  function tap(pos){if(done)return;
+    if(sel===null){sel=pos;pz.children[pos].classList.add('sel');return;}
+    if(sel===pos){pz.children[pos].classList.remove('sel');sel=null;return;}
+    [order[sel],order[pos]]=[order[pos],order[sel]];sel=null;moves++;mv.textContent=moves+' moves';render();
+    if(order.every((t,i)=>t===i)){done=true;pz.classList.add('solved');burst(60);
+      setTimeout(()=>showWin('Puzzle Solved!',moves+' moves ma! 🧩','wed-7','Thank You,<br>Bhai &amp; Bhabhi ❤️<br><small style="font-family:var(--body);font-size:1rem;color:#FFE1EA">for everything, for always</small>'),1300);}}
+  const pk=document.getElementById('pzPeek');
+  ['pointerdown'].forEach(e=>pk.addEventListener(e,()=>wrap.classList.add('peeking')));
+  ['pointerup','pointerleave','pointercancel'].forEach(e=>pk.addEventListener(e,()=>wrap.classList.remove('peeking')));
+  document.getElementById('pzShuf').onclick=shuffle;
+  shuffle();
+  onEnter.sThanks=()=>{if(done)shuffle();};
 })();
 
 /* ---------- petals ---------- */
