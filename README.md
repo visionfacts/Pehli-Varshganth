@@ -14,7 +14,12 @@ const CONFIG = {
   music: "media/song.mp3"      // <- tamaru gamtu song media folder ma "song.mp3" naame muko
 };
 ```
-Song na muko to music button ane "vinyl record" vali screen aapo-aap chhupai jase. Song mukso to record par photo sathe gaanu vagse.
+- `media/song.mp3` = "Pehle Bhi Main" (aakhi website ma background ma, loop)
+- `media/reel-song.mp3` = "Tum Ho Toh" (fakt reel page par, video sathe loop; reel vakhte background song pause)
+- `reelSongStart` = reel song ketla second thi sharu thay
+- `readSeconds` = vaanchva vala page par ketla second pachhi "Continue" khule
+
+Darek page puru thay pachhi j aagal javay: badha photo jovay, candle, scratch, saat phera, slider, puri reel, badha games.
 
 ## 2. GitHub Pages par upload
 1. github.com par login -> **New repository** -> naam: `Pehli-Varshganth` -> **Public** -> Create.

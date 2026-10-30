@@ -334,6 +334,18 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
 @media(min-width:620px){.ty-grid{grid-template-columns:repeat(4,1fr)}}
 
 #petals{position:fixed;inset:0;pointer-events:none;z-index:55}
+/* ---------- locked next ---------- */
+.pill.next.locked{background:rgba(255,243,220,.16);color:var(--ivory);box-shadow:none;border:1px dashed rgba(246,213,138,.7);font-size:.95rem;letter-spacing:.01em;padding:0 1.1rem;cursor:not-allowed}
+body.paper .pill.next.locked{background:rgba(194,24,91,.08);color:var(--sindoor-deep);border-color:rgba(194,24,91,.45)}
+body.red .pill.next.locked{background:rgba(255,243,220,.16);color:var(--ivory)}
+.pill.next.nudge{animation:nudge .45s}
+@keyframes nudge{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+/* ---------- reel extras ---------- */
+.filmbox{cursor:pointer}
+.reelbar{position:relative;height:4px;margin:.7rem auto 0;width:min(70vw,17rem);border-radius:4px;background:rgba(255,243,220,.2);overflow:hidden}
+.reelbar i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--marigold)}
+.reelplay{position:absolute;left:50%;top:50%;width:4rem;height:4rem;margin:-2rem 0 0 -2rem;border-radius:50%;background:rgba(62,7,21,.7);display:grid;place-items:center;font-size:1.5rem;color:var(--ivory);opacity:0;transition:opacity .3s;pointer-events:none}
+.filmbox.paused .reelplay{opacity:1}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}}
 </style>
 </head>
@@ -492,8 +504,9 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
   <div class="in">
     <p class="kicker">now showing</p>
     <h2 class="script">A Love Story</h2>
-    <div class="filmbox"><video id="reel" src="media/reel.mp4" poster="media/reel-poster.jpg" controls playsinline muted preload="metadata"></video></div>
-    <p class="lede small" style="margin-top:.8rem">Saathe juo 💞</p>
+    <div class="filmbox" id="filmbox"><video id="reel" src="media/reel.mp4" poster="media/reel-poster.jpg" playsinline muted loop preload="auto"></video><span class="reelplay">▶</span></div>
+    <div class="reelbar"><i id="reelBar"></i></div>
+    <p class="lede small" style="margin-top:.8rem">Saathe juo 💞 <span style="opacity:.7">(tap = pause)</span></p>
   </div>
 </section>
 
@@ -592,7 +605,11 @@ const CONFIG = {
   bride: "Dhruti",
   from:  "Drashti",
   weddingDate: "2025-11-30",
-  music: "media/song.mp3"
+  music: "media/song.mp3",          // background song (aakhi website ma)
+  reelSong: "media/reel-song.mp3",  // reel vado song (fakt reel page par)
+  reelSongStart: 0,                 // reel song ketla second thi sharu thay (e.g. 45)
+  // Vaanchva vala page par ketla second pachhi j "Continue" khule
+  readSeconds: { s1:6, s2:7, s3:6, sCake:3, s8:14, s10:8, s13:7 }
 };
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -602,16 +619,55 @@ document.getElementById('fromName').textContent=CONFIG.from;
 document.getElementById('walkerName').textContent=CONFIG.groom[0]+' ♥ '+CONFIG.bride[0];
 
 /* ---------- music ---------- */
-let audio=null, musicOK=false;
+let audio=null, musicOK=false, soundOn=true;
 const musicBtn=document.getElementById('musicBtn');
 if(CONFIG.music){
   audio=new Audio(CONFIG.music); audio.loop=true; audio.preload='auto';
   audio.addEventListener('canplay',()=>{musicOK=true;musicBtn.classList.add('ok');},{once:true});
   audio.addEventListener('error',()=>{audio=null;});
-  audio.addEventListener('play',()=>{musicBtn.textContent='♫ Music';syncVinyl();});
-  audio.addEventListener('pause',()=>{musicBtn.textContent='♫ Off';syncVinyl();});
-  musicBtn.onclick=()=>{if(audio)audio.paused?audio.play():audio.pause();};
+  audio.addEventListener('play',syncVinyl);
+  audio.addEventListener('pause',syncVinyl);
 }
+/* reel song: fakt reel (s9) par vagse, video sathe loop */
+let reelAudio=null;
+if(CONFIG.reelSong){
+  reelAudio=new Audio(CONFIG.reelSong); reelAudio.preload='auto';
+  reelAudio.addEventListener('canplay',()=>musicBtn.classList.add('ok'),{once:true});
+  reelAudio.addEventListener('error',()=>{reelAudio=null;});
+}
+function applySound(){if(audio)audio.muted=!soundOn;if(reelAudio)reelAudio.muted=!soundOn;musicBtn.textContent=soundOn?'♫ Music':'♫ Off';}
+musicBtn.onclick=()=>{soundOn=!soundOn;applySound();
+  if(soundOn&&audio&&audio.paused&&screens[cur].id!=='s9')audio.play().catch(()=>{});};
+
+/* ---------- page gates: page puru thay pachhi j Continue ---------- */
+const G={};   // task flags, page code set kare
+const doneP=new Set(); let enterT=Date.now();
+const TASK={
+  sCake:()=>G.candle?null:'🕯️ Pehla candle bujhavo',
+  s4:()=>(G.camSeen||0)>=SHOTS.length?null:`📸 ${G.camSeen||0} / ${SHOTS.length} photo joya`,
+  s5:()=>(G.polMoved||0)>=(G.polTotal||8)?null:`👆 ${G.polMoved||0} / ${G.polTotal||8} photo khasedo`,
+  s6:()=>(G.tnLo&&G.tnHi)?null:'👆 Slider banne baju puro khasedo',
+  s8:()=>(G.phera||0)>=7?null:`🔥 ${G.phera||0} / 7 phera`,
+  s7:()=>G.scratch?null:'🤚 Pehla scratch karo',
+  s9:()=>G.reel?null:`🎬 Reel puri juo · ${G.reelPct||0}%`,
+  s11:()=>G.quiz?null:'🎮 Pehla game puri karo',
+  s12:()=>G.match?null:`💑 ${G.pairs||0} / 6 jodi`,
+  sThanks:()=>G.puzzle?null:'🧩 Pehla puzzle solve karo'
+};
+function lockMsg(){
+  const id=screens[cur].id; if(cur===0||doneP.has(id))return null;
+  const t=TASK[id]&&TASK[id](); if(t)return t;
+  const need=(CONFIG.readSeconds||{})[id]||0, left=Math.ceil(need-(Date.now()-enterT)/1000);
+  if(left>0)return `⏳ Vaancho… ${left}`;
+  doneP.add(id); return null;
+}
+function refreshNext(){
+  if(cur===0)return; const m=lockMsg(), s=screens[cur];
+  nextB.classList.toggle('locked',!!m);
+  const label=m||s.dataset.next||'Continue';
+  if(nextB.textContent!==label)nextB.textContent=label;
+}
+setInterval(refreshNext,250);
 
 /* ---------- navigation ---------- */
 const screens=[...document.querySelectorAll('.screen')];
@@ -629,10 +685,14 @@ function go(i){
   nextB.textContent=s.dataset.next||'Continue';
   backB.disabled=cur<=1;
   bar.style.width=(cur/(screens.length-1)*100)+'%';
+  enterT=Date.now();
+  if(s.id!=='s9')leaveReel();
   if(onEnter[s.id])onEnter[s.id]();
-  if(s.id!=='s9'){const v=document.getElementById('reel');if(!v.paused)v.pause();}
+  refreshNext();
 }
-function step(d){let i=cur+d;while(i>0&&i<screens.length&&!usable(i))i+=d;
+function step(d){
+  if(d>0&&lockMsg()){nextB.classList.remove('nudge');void nextB.offsetWidth;nextB.classList.add('nudge');refreshNext();return;}
+  let i=cur+d;while(i>0&&i<screens.length&&!usable(i))i+=d;
   if(cur===screens.length-1&&d>0){replay();return;} go(i);}
 nextB.onclick=()=>step(1); backB.onclick=()=>step(-1);
 addEventListener('keydown',e=>{if(cur===0)return;if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
@@ -640,10 +700,11 @@ addEventListener('keydown',e=>{if(cur===0)return;if(e.key==='ArrowRight')step(1)
 /* ---------- gate ---------- */
 document.getElementById('openGate').onclick=()=>{
   if(audio)audio.play().catch(()=>{});
+  if(reelAudio){reelAudio.muted=true;reelAudio.play().then(()=>{reelAudio.pause();reelAudio.muted=!soundOn;}).catch(()=>{reelAudio.muted=!soundOn;});}
   screens[0].classList.add('open');
   setTimeout(()=>go(1),reduce?0:1200);
 };
-function replay(){ if(audio){audio.pause();audio.currentTime=0;} screens[0].classList.remove('open'); go(0); }
+function replay(){ leaveReel(); bgWasOn=false; if(audio){audio.pause();audio.currentTime=0;} screens[0].classList.remove('open'); go(0); }
 
 /* ---------- 1 splash sparkles ---------- */
 onEnter.s1=()=>{
@@ -708,7 +769,7 @@ onEnter.s1=()=>{
 /* ---------- cake ---------- */
 (function(){
   const c=document.getElementById('candle'),note=document.getElementById('cakeNote');
-  c.onclick=()=>{if(c.classList.contains('out'))return;c.classList.add('out');burst(80);
+  c.onclick=()=>{if(c.classList.contains('out'))return;c.classList.add('out');G.candle=true;burst(80);
     note.innerHTML='<b style="color:var(--sindoor)">Wish made! ✨🙏</b>';};
   onEnter.sCake=()=>{c.classList.remove('out');note.textContent='Wish mango, pachhi candle par tap karo 🕯️';};
 })();
@@ -732,10 +793,12 @@ const SHOTS=[
 (function(){
   const vf=document.getElementById('vf'), cap=document.getElementById('camCap'), cnt=document.getElementById('cnt'), fl=document.getElementById('flash');
   const imgs=SHOTS.map(([f],i)=>{const im=new Image();im.src=`images/${f}.jpg`;im.alt='';if(i>1)im.loading='lazy';vf.insertBefore(im,cnt);return im;});
-  let i=0;
-  function show(n,flash){imgs[i].classList.remove('on');i=(n+imgs.length)%imgs.length;imgs[i].classList.add('on');cap.textContent=SHOTS[i][1];cnt.textContent=(i+1)+' / '+imgs.length;
-    if(flash){fl.classList.remove('go');void fl.offsetWidth;fl.classList.add('go');}}
+  let i=0; const seen=new Set(); let seenT=null;
+  function show(n,flash){clearTimeout(seenT);imgs[i].classList.remove('on');i=(n+imgs.length)%imgs.length;imgs[i].classList.add('on');cap.textContent=SHOTS[i][1];cnt.textContent=(i+1)+' / '+imgs.length;
+    if(flash){fl.classList.remove('go');void fl.offsetWidth;fl.classList.add('go');}
+    const k=i; seenT=setTimeout(()=>{if(screens[cur].id==='s4'){seen.add(k);G.camSeen=seen.size;refreshNext();}},1500);}
   show(0);
+  onEnter.s4=()=>show(i);
   document.getElementById('shutter').onclick=()=>show(i+1,true);
   document.getElementById('camNext').onclick=()=>show(i+1,true);
   document.getElementById('camPrev').onclick=()=>show(i-1,false);
@@ -745,7 +808,7 @@ const SHOTS=[
 (function(){
   const t=document.getElementById('table');
   const P=[['year-1','Ghar ni diwal'],['year-7','Weekend vibes'],['year-4','Saree day'],['year-2','Sunday look'],['begin-3','Matching!'],['year-6','Hasta raho'],['year-8','Bas aam j'],['wed-6','Raja-Rani 👑']];
-  let z=10;
+  let z=10; const moved=new Set(); G.polTotal=P.length;
   P.forEach(([f,c],k)=>{
     const d=document.createElement('div');d.className='pol';
     d.innerHTML=`<img src="images/${f}.jpg" alt="" loading="lazy" draggable="false"><span>${c}</span>`;
@@ -754,6 +817,7 @@ const SHOTS=[
     let sx,sy,ox,oy,drag=false;
     d.addEventListener('pointerdown',e=>{drag=true;d.setPointerCapture(e.pointerId);d.classList.add('drag');d.style.zIndex=++z;sx=e.clientX;sy=e.clientY;ox=d.offsetLeft;oy=d.offsetTop;d.style.transform='rotate(0deg) scale(1.06)';});
     d.addEventListener('pointermove',e=>{if(!drag)return;const W=t.clientWidth-d.offsetWidth,H=t.clientHeight-d.offsetHeight;
+      if(Math.hypot(e.clientX-sx,e.clientY-sy)>25&&!moved.has(k)){moved.add(k);G.polMoved=moved.size;}
       d.style.left=Math.max(-20,Math.min(W+20,ox+e.clientX-sx))+'px';d.style.top=Math.max(-20,Math.min(H+20,oy+e.clientY-sy))+'px';});
     const end=()=>{if(!drag)return;drag=false;d.classList.remove('drag');d.style.transform=`rotate(${(Math.random()*16-8).toFixed(1)}deg)`;};
     d.addEventListener('pointerup',end);d.addEventListener('pointercancel',end);
@@ -765,7 +829,7 @@ const SHOTS=[
 })();
 
 /* ---------- 6 then & now ---------- */
-(function(){const tn=document.getElementById('tn'),r=tn.querySelector('input');const set=()=>tn.style.setProperty('--p',r.value+'%');r.addEventListener('input',set);set();})();
+(function(){const tn=document.getElementById('tn'),r=tn.querySelector('input');const set=()=>{tn.style.setProperty('--p',r.value+'%');if(+r.value<=12)G.tnLo=true;if(+r.value>=88)G.tnHi=true;};r.addEventListener('input',set);set();})();
 
 /* ---------- 7 mehndi scratch ---------- */
 (function(){
@@ -782,7 +846,7 @@ const SHOTS=[
   function sc(e){if(!drawing||done)return;e.preventDefault();const[x,y]=pos(e);ctx.globalCompositeOperation='destination-out';ctx.fillStyle='#000';ctx.beginPath();ctx.arc(x,y,26,0,7);ctx.fill();
     if(++n%12===0)chk();}
   function chk(){if(done)return;const d=ctx.getImageData(0,0,cv.width,cv.height).data;let c=0;for(let i=3;i<d.length;i+=64)if(d[i]<40)c++;if(c/(d.length/64)>.5)finish();}
-  function finish(){done=true;wrap.classList.add('done');note.innerHTML='<strong>D ❤️ N</strong> · jindagi bhar mate';burst(40);}
+  function finish(){done=true;G.scratch=true;wrap.classList.add('done');note.innerHTML='<strong>D ❤️ N</strong> · jindagi bhar mate';burst(40);}
   ['mousedown','touchstart'].forEach(ev=>cv.addEventListener(ev,e=>{drawing=true;sc(e);},{passive:false}));
   ['mousemove','touchmove'].forEach(ev=>cv.addEventListener(ev,sc,{passive:false}));
   ['mouseup','mouseleave','touchend'].forEach(ev=>cv.addEventListener(ev,()=>{if(drawing)chk();drawing=false;}));
@@ -805,7 +869,7 @@ const VOWS=[
     b.style.left=(50+Math.cos(a)*37.5)+'%';b.style.top=(50+Math.sin(a)*37.5)+'%';b.setAttribute('aria-label','Phera '+(i+1));
     b.onclick=()=>{angle+=(((i*360/7)-angle)%360+360)%360;walker.style.transform=`rotate(${angle}deg)`;walker.style.setProperty('--ca',(-angle)+'deg');
       done.add(i);b.classList.add('done');document.getElementById('vowN').textContent='Phera '+(i+1)+' of 7';
-      document.getElementById('vowG').textContent=v.g;document.getElementById('vowE').textContent=v.e;arc.style.strokeDashoffset=942.5*(1-done.size/7);
+      document.getElementById('vowG').textContent=v.g;document.getElementById('vowE').textContent=v.e;arc.style.strokeDashoffset=942.5*(1-done.size/7);G.phera=done.size;
       if(done.size===7){document.getElementById('vowN').textContent='Saptapadi complete 🔥';burst(60);}};
     ring.appendChild(b);});
 })();
@@ -845,7 +909,7 @@ const REACT=['Sachu j! 😂','Objection noted 🤭','Aa to badha jaane chhe 😄
     qn.textContent=(i+1)+' / '+QUIZ.length;qr.textContent='';[...dots.children].forEach((x,k)=>x.classList.toggle('on',k<=i));lock=false;}
   function fly(btn,emo){const r=btn.getBoundingClientRect(),e=document.createElement('span');e.className='flyemo';e.textContent=emo;
     e.style.left=(r.left+r.width/2-16)+'px';e.style.top=(r.top)+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),1200);}
-  function finish(){play.hidden=true;endB.hidden=false;
+  function finish(){play.hidden=true;endB.hidden=false;G.quiz=true;
     document.getElementById('scG').textContent=g;document.getElementById('scD').textContent=d;
     document.getElementById('qVerdict').textContent=g===d?'Barobar takkar! 💯':(g>d?CONFIG.groom:CONFIG.bride)+' jitya! 😂';burst(70);
     setTimeout(()=>showWin('Game 1 complete!','Score '+g+' – '+d,'hero','Score game ma,<br>pan jodi to 10/10! 💯'),1400);}
@@ -880,7 +944,7 @@ const REACT=['Sachu j! 😂','Objection noted 🤭','Aa to badha jaane chhe 😄
     c.classList.add('up');open.push(c);
     if(open.length<2)return;
     moves++;const[a,b]=open;open=[];
-    if(a.dataset.f===b.dataset.f){pairs++;setTimeout(()=>{a.classList.add('ok');b.classList.add('ok');a.classList.remove('up');b.classList.remove('up');burst(15);},350);
+    if(a.dataset.f===b.dataset.f){pairs++;G.pairs=Math.max(G.pairs||0,pairs);if(pairs===PICS.length)G.match=true;setTimeout(()=>{a.classList.add('ok');b.classList.add('ok');a.classList.remove('up');b.classList.remove('up');burst(15);},350);
       upd();if(pairs===PICS.length)setTimeout(()=>showWin('Perfect Match!',moves+' moves ma badhi jodi mali 🎉','wed-3','Perfect match,<br>jem tame banne! 💑'),1100);}
     else{lock=true;upd();setTimeout(()=>{a.classList.add('no');b.classList.add('no');},450);
       setTimeout(()=>{a.classList.remove('up','no');b.classList.remove('up','no');lock=false;},1000);}
@@ -889,7 +953,41 @@ const REACT=['Sachu j! 😂','Objection noted 🤭','Aa to badha jaane chhe 😄
   onEnter.s12=()=>{if(pairs===PICS.length)deal();};
 })();
 onEnter.s13=()=>burst(70);
-onEnter.s9=()=>{const v=document.getElementById('reel');v.currentTime=0;v.play().catch(()=>{});};
+/* ---------- 9 reel + "Tum Ho Toh" ---------- */
+const reel=document.getElementById('reel'), filmbox=document.getElementById('filmbox'), reelBar=document.getElementById('reelBar');
+let bgWasOn=false, reelLast=0, reelMax=0, reelOn=false;
+const RS=()=>CONFIG.reelSongStart||0;
+function reelSync(force){
+  if(!reelAudio)return; const want=RS()+reel.currentTime;
+  if(force||Math.abs(reelAudio.currentTime-want)>.35){try{reelAudio.currentTime=want;}catch(e){}}
+}
+onEnter.s9=()=>{
+  reelOn=true;
+  if(audio&&!audio.paused){bgWasOn=true;audio.pause();}
+  reel.currentTime=0; reelLast=0; filmbox.classList.remove('paused');
+  if(reelAudio){reelAudio.muted=!soundOn;reelSync(true);reelAudio.play().catch(()=>{});}
+  reel.play().catch(()=>{filmbox.classList.add('paused');if(reelAudio)reelAudio.pause();});
+};
+function leaveReel(){
+  if(!reelOn)return; reelOn=false;
+  if(!reel.paused)reel.pause(); if(reelAudio)reelAudio.pause();
+  if(bgWasOn&&audio){audio.play().catch(()=>{});} bgWasOn=false;
+}
+reel.addEventListener('timeupdate',()=>{
+  const t=reel.currentTime, D=reel.duration||1;
+  if(t+1<reelLast){reelSync(true); G.reel=true;}           // video loop thayo -> song pan farithi
+  reelLast=t; reelMax=Math.max(reelMax,t);
+  if(reelMax>=D-.6)G.reel=true;
+  G.reelPct=G.reel?100:Math.min(99,Math.floor(reelMax/D*100));
+  reelBar.style.width=(t/D*100)+'%';
+  if(reelAudio&&!reel.paused){reelSync(false);
+    const tail=D-t; try{reelAudio.volume=tail<2?Math.max(0,tail/2):(t<1?Math.min(1,t):1);}catch(e){}}
+});
+reel.addEventListener('play',()=>{filmbox.classList.remove('paused');if(reelOn&&reelAudio){reelSync(true);reelAudio.play().catch(()=>{});}});
+reel.addEventListener('playing',()=>{if(reelOn&&reelAudio&&reelAudio.paused){reelSync(true);reelAudio.play().catch(()=>{});}});
+reel.addEventListener('pause',()=>{filmbox.classList.add('paused');if(reelAudio)reelAudio.pause();});
+reel.addEventListener('waiting',()=>{if(reelAudio)reelAudio.pause();});
+filmbox.onclick=()=>{reel.paused?reel.play().catch(()=>{}):reel.pause();};
 
 
 /* ---------- photo puzzle ---------- */
@@ -905,7 +1003,7 @@ onEnter.s9=()=>{const v=document.getElementById('reel');v.currentTime=0;v.play()
     if(sel===null){sel=pos;pz.children[pos].classList.add('sel');return;}
     if(sel===pos){pz.children[pos].classList.remove('sel');sel=null;return;}
     [order[sel],order[pos]]=[order[pos],order[sel]];sel=null;moves++;mv.textContent=moves+' moves';render();
-    if(order.every((t,i)=>t===i)){done=true;pz.classList.add('solved');burst(60);
+    if(order.every((t,i)=>t===i)){done=true;G.puzzle=true;pz.classList.add('solved');burst(60);
       setTimeout(()=>showWin('Puzzle Solved!',moves+' moves ma! 🧩','wed-7','Thank You,<br>Bhai &amp; Bhabhi ❤️<br><small style="font-family:var(--body);font-size:1rem;color:#FFE1EA">for everything, for always</small>'),1300);}}
   const pk=document.getElementById('pzPeek');
   ['pointerdown'].forEach(e=>pk.addEventListener(e,()=>wrap.classList.add('peeking')));
