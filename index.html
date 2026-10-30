@@ -228,27 +228,32 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
 .arm::after{content:"";position:absolute;left:50%;top:12px;bottom:0;width:5px;margin-left:-2.5px;background:linear-gradient(#ccc,#999);border-radius:3px;box-shadow:-4px 6px 0 -1px #777}
 .arm.on{transform:rotate(-6deg)}
 
-/* ---------- 11 letter ---------- */
-.env-wrap{position:relative;width:min(84vw,20rem);aspect-ratio:7/5;margin:1.6rem auto 0}
-.env{position:absolute;inset:0;border-radius:6px;background:var(--ivory);box-shadow:0 18px 36px rgba(0,0,0,.35)}
-.env .flap{position:absolute;left:0;right:0;top:0;height:58%;clip-path:polygon(0 0,100% 0,50% 100%);background:#F1DFC0;transform-origin:top;transition:transform .7s;z-index:3;filter:drop-shadow(0 2px 2px rgba(0,0,0,.1))}
-.env .pocket{position:absolute;inset:0;z-index:4;clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%);background:#FBF0DC;border-radius:6px}
-.env .seal{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);z-index:5;width:3.2rem;height:3.2rem;border-radius:50%;background:var(--sindoor);color:var(--ivory);display:grid;place-items:center;font-size:1.3rem;box-shadow:0 3px 8px rgba(0,0,0,.35);transition:opacity .3s}
-.env .peek{position:absolute;left:8%;right:8%;top:10%;bottom:6%;background:#fff;z-index:2;border-radius:3px;transition:transform .8s .4s}
-.env-wrap.open .flap{transform:rotateX(180deg);z-index:1}
-.env-wrap.open .seal{opacity:0}
-.env-wrap.open .peek{transform:translateY(-55%)}
-.tabs{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem}
-.tab{padding:.35rem .9rem;border-radius:999px;border:1px solid rgba(194,31,58,.35);font-size:.95rem;color:var(--sindoor-deep)}
-.tab.on{background:var(--sindoor);color:var(--ivory);border-color:var(--sindoor)}
-.paper{background:#fff;border-radius:6px;padding:1.5rem 1.3rem;text-align:left;box-shadow:0 14px 30px rgba(59,26,18,.15);position:relative;min-height:22rem;
-  background-image:repeating-linear-gradient(transparent 0 31px,rgba(194,31,58,.08) 31px 32px)}
-.paper::before{content:"";position:absolute;right:1rem;top:1rem;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--sindoor)}
-.paper .sal{font-family:var(--script);font-size:2.2rem;color:var(--sindoor-deep);line-height:1.1;margin-bottom:.6rem}
-.paper .txt{white-space:pre-wrap;font-size:1.08rem;line-height:1.75;color:var(--ink)}
-.caret{display:inline-block;width:1px;height:1.1em;background:var(--ink);vertical-align:-2px;animation:blink .8s infinite}
-@keyframes blink{50%{opacity:0}}
-.skip{margin-top:.6rem;font-size:.9rem;color:#8A6A5A;text-decoration:underline}
+/* ---------- 11 game: kon vadhare ---------- */
+.qcard{background:#fff;border-radius:18px;padding:1.2rem 1rem 1.3rem;margin-top:1rem;box-shadow:0 14px 30px rgba(59,26,18,.15);position:relative}
+.qnum{font-size:.85rem;letter-spacing:.1em;color:#A0606F}
+.qtext{font-family:var(--display);font-size:clamp(1.45rem,6vw,1.9rem);line-height:1.2;color:var(--sindoor-deep);margin:.3rem 0 1.1rem;min-height:2.4em;display:flex;align-items:center;justify-content:center}
+.qtext.pop{animation:qpop .45s cubic-bezier(.3,1.5,.5,1)}
+@keyframes qpop{from{transform:scale(.6);opacity:0}}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.pick{display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:.9rem .4rem;border-radius:16px;font-weight:600;font-size:1.05rem;color:var(--ivory);box-shadow:0 5px 0 rgba(0,0,0,.25);transition:transform .15s,box-shadow .15s}
+.pick b{font-size:2.6rem;line-height:1;font-weight:400}
+.pick.g{background:linear-gradient(160deg,#951A3A,#6E0F27)}
+.pick.d{background:linear-gradient(160deg,#E0457A,#C2185B)}
+.pick:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.pick.hit{animation:hit .5s}
+@keyframes hit{40%{transform:scale(1.12) rotate(-4deg)}}
+.both{margin-top:.8rem;padding:.45rem 1.2rem;border-radius:999px;background:var(--marigold);color:#3A1A06;font-weight:600;box-shadow:0 4px 0 #B5740B}
+.both:active{transform:translateY(3px);box-shadow:0 1px 0 #B5740B}
+.qreact{min-height:1.6em;margin-top:.8rem;font-weight:600;color:var(--sindoor)}
+.qdots{display:flex;gap:.4rem;justify-content:center;margin-top:.6rem}
+.qdots i{width:.6rem;height:.6rem;border-radius:50%;background:rgba(194,31,58,.2);transition:background .3s,transform .3s}
+.qdots i.on{background:var(--sindoor);transform:scale(1.2)}
+.qend{margin-top:1rem}
+.qend .score{display:flex;justify-content:center;gap:1.4rem;font-family:var(--display);font-size:2.6rem;color:var(--sindoor-deep);line-height:1}
+.qend .score small{display:block;font-family:var(--body);font-size:.9rem;color:#8A6A5A}
+.qend .verdict{font-family:var(--script);font-size:2.6rem;color:var(--sindoor);margin:.6rem 0}
+.flyemo{position:fixed;z-index:58;font-size:2rem;pointer-events:none;animation:fly 1.1s ease-out forwards}
+@keyframes fly{to{transform:translateY(-160px) scale(1.6);opacity:0}}
 
 /* ---------- 12 jar ---------- */
 .jar{position:relative;width:min(56vw,13rem);aspect-ratio:3/4;margin:1.8rem auto 0;cursor:pointer}
@@ -348,7 +353,7 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
       <g id="leaves"></g>
     </svg>
     <h2 class="script">Happy Anniversary</h2>
-    <p class="lede">Ek varas pehla be parivar e saathe ek bij ropyu hatu. Aaje e prem nu jhaad bani gayu chhe, ane dar divase vadhu khile chhe.</p>
+    <p class="lede">Ek bij thi prem nu jhaad 🌳</p>
   </div>
 </section>
 
@@ -374,7 +379,7 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
       <div class="tier t1"><span class="drip"></span><span class="txt">Happy 1st Anniversary</span></div>
       <div class="plate"></div>
     </div>
-    <p class="lede" id="cakeNote">Aankh bandh karo, ek wish mango, ane candle par tap kari ne phook maro 🕯️</p>
+    <p class="lede" id="cakeNote">Wish mango, pachhi candle par tap karo 🕯️</p>
   </div>
 </section>
 
@@ -408,7 +413,7 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
   <div class="in">
     <p class="kicker">tyare ane atyare</p>
     <h2 class="script">Then &amp; Now</h2>
-    <p class="lede">Same lean, same smile, bas vachche ek moto badlav. Drag kari ne juo.</p>
+    <p class="lede">Slider drag kari ne juo 👆</p>
     <div class="tn" id="tn">
       <img src="images/now.jpg" alt="Naman and Dhruti on their wedding day">
       <img class="top" src="images/then.jpg" alt="Naman and Dhruti before the wedding">
@@ -441,7 +446,7 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
   <div class="in">
     <p class="kicker">kumkum pagla, ghar ma pehlu pagluu</p>
     <h2 class="script">Welcome Home</h2>
-    <p class="lede">Kumkum na pagla ma kai chhupayelu hatu. Ghasi ne shodho.</p>
+    <p class="lede">Ghasi ne shodho shu chhupayelu chhe 🤚</p>
     <div class="scratch" id="scratch"><img src="images/mehndi-feet.jpg" alt="Kumkum on the feet with the letters D and N"><canvas aria-hidden="true"></canvas></div>
     <p class="note" id="scratchNote">🤚 Scratch to reveal</p>
   </div>
@@ -453,12 +458,12 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
     <p class="kicker">now showing</p>
     <h2 class="script">A Love Story</h2>
     <div class="filmbox"><video id="reel" src="media/reel.mp4" poster="media/reel-poster.jpg" controls playsinline muted preload="metadata"></video></div>
-    <p class="lede small" style="margin-top:.8rem">Tamari kahani, shuruaat thi aaj sudhi. Haath pakdi ne saathe juo 🫶</p>
+    <p class="lede small" style="margin-top:.8rem">Saathe juo 🫶</p>
   </div>
 </section>
 
 <!-- 10 : vinyl -->
-<section class="screen s-red" id="s10" data-theme="red" data-next="A letter for you" data-needs-music>
+<section class="screen s-red" id="s10" data-theme="red" data-next="Play a game" data-needs-music>
   <div class="in">
     <p class="kicker" style="color:#FFE1C2">on repeat</p>
     <h2 class="script">This song is you two</h2>
@@ -467,22 +472,28 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
   </div>
 </section>
 
-<!-- 11 : letters -->
+<!-- 11 : game -->
 <section class="screen s-paper" id="s11" data-theme="paper" data-next="The wish jar">
   <div class="in">
-    <div id="envStage">
-      <p class="kicker">1st anniversary = paper anniversary 📜</p>
-      <h2 class="script">A Letter For You</h2>
-      <p class="lede small">Pehli varshganth ne "paper anniversary" kahevay chhe. Etle mari gift: kagal par lakhelo prem.</p>
-      <button class="env-wrap" id="envBtn" aria-label="Open the letter">
-        <span class="env"><span class="peek"></span><span class="flap"></span><span class="pocket"></span><span class="seal">💌</span></span>
-      </button>
-      <p class="small" style="margin-top:1rem;color:#8A6A5A">Tap the envelope to open it</p>
+    <p class="kicker">chalo, ek nani game 🎮</p>
+    <h2 class="script">Kon Vadhare?</h2>
+    <div id="qPlay">
+      <div class="qcard">
+        <div class="qnum" id="qNum">1 / 6</div>
+        <div class="qtext" id="qText"></div>
+        <div class="qopts">
+          <button class="pick g" data-w="g"><b>🤵</b><span class="nm-g">Naman</span></button>
+          <button class="pick d" data-w="d"><b>👰</b><span class="nm-b">Dhruti</span></button>
+        </div>
+        <button class="both" data-w="x">Banne! 😂</button>
+        <p class="qreact" id="qReact"></p>
+      </div>
+      <div class="qdots" id="qDots"></div>
     </div>
-    <div id="letterStage" hidden>
-      <div class="tabs" id="tabs"></div>
-      <div class="paper"><div class="sal" id="sal"></div><div class="txt" id="txt"></div></div>
-      <button class="skip" id="skip">Show the full letter</button>
+    <div class="qend" id="qEnd" hidden>
+      <div class="score"><div><span id="scG">0</span><small class="nm-g">Naman</small></div><div><span id="scD">0</span><small class="nm-b">Dhruti</small></div></div>
+      <div class="verdict" id="qVerdict"></div>
+      <button class="btn" id="qAgain">↻ Fari ramo</button>
     </div>
   </div>
 </section>
@@ -517,10 +528,8 @@ body.red .pill.next{background:var(--ivory);color:var(--sindoor-deep)}
     <p class="kicker" style="color:#FFE1EA">one last thing, before you close this</p>
     <h2 class="script">Happy 1st Anniversary</h2>
     <p style="font-family:var(--display);font-size:1.2rem;color:var(--marigold-2)">1 year down, forever to go 💍</p>
-    <p>Aa aakhi website me ek j vaat kehva mate banavi chhe: thank you. Ek bija ne sambhalva mate, saathe hasva mate, nani nani ladai pachhi panch minute ma manai java mate, ane aakha parivar ne batavva mate ke saro sambandh kevo hoy.</p>
-    <p>Bhai, tame sacha jeevansathi banya. Bhabhi, tame ghar ne vadhu ghar jevu banavi didhu.</p>
-    <p class="gu">ભગવાન તમારી જોડીને સદાય સલામત રાખે, અને તમારું ઘર હંમેશા હાસ્યથી ભરેલું રહે. 🤍</p>
-    <div class="meaning"><b class="gu">પહેલી વર્ષગાંઠ</b>Pehli Varshganth, aa website nu naam. Eno arth thay <i>pehli lagna-tithi</i>. Amuk lagani aapni bhasha ma j saari lage chhe. ❤️</div>
+    <p>Thank you, ek bija ne aatlo prem karva mate. 🤍</p>
+    <p class="gu">ભગવાન તમારી જોડીને સદાય સલામત રાખે.</p>
     <p class="sign">Hamesha tamari,<b id="fromName">Drashti</b></p>
   </div>
 </section>
@@ -653,8 +662,8 @@ onEnter.s1=()=>{
 (function(){
   const c=document.getElementById('candle'),note=document.getElementById('cakeNote');
   c.onclick=()=>{if(c.classList.contains('out'))return;c.classList.add('out');burst(80);
-    note.innerHTML='<b style="color:var(--sindoor)">Wish made! ✨</b><br>Pehli varshganth ni pehli wish. Bhagwan jaldi puri kare. 🙏';};
-  onEnter.sCake=()=>{c.classList.remove('out');note.textContent='Aankh bandh karo, ek wish mango, ane candle par tap kari ne phook maro 🕯️';};
+    note.innerHTML='<b style="color:var(--sindoor)">Wish made! ✨🙏</b>';};
+  onEnter.sCake=()=>{c.classList.remove('out');note.textContent='Wish mango, pachhi candle par tap karo 🕯️';};
 })();
 
 /* ---------- 4 camera ---------- */
@@ -726,7 +735,7 @@ const SHOTS=[
   function sc(e){if(!drawing||done)return;e.preventDefault();const[x,y]=pos(e);ctx.globalCompositeOperation='destination-out';ctx.fillStyle='#000';ctx.beginPath();ctx.arc(x,y,26,0,7);ctx.fill();
     if(++n%12===0)chk();}
   function chk(){if(done)return;const d=ctx.getImageData(0,0,cv.width,cv.height).data;let c=0;for(let i=3;i<d.length;i+=64)if(d[i]<40)c++;if(c/(d.length/64)>.5)finish();}
-  function finish(){done=true;wrap.classList.add('done');note.innerHTML='<strong>D ane N.</strong> Kumkum na pagla ma lakhayela, jindagi bhar mate. ❤️<br><span class="gu">કંકુ પગલાં તો ભૂંસાઈ ગયાં, પણ નામ દિલમાં લખાઈ ગયાં.</span>';burst(40);}
+  function finish(){done=true;wrap.classList.add('done');note.innerHTML='<strong>D ❤️ N</strong> · jindagi bhar mate';burst(40);}
   ['mousedown','touchstart'].forEach(ev=>cv.addEventListener(ev,e=>{drawing=true;sc(e);},{passive:false}));
   ['mousemove','touchmove'].forEach(ev=>cv.addEventListener(ev,sc,{passive:false}));
   ['mouseup','mouseleave','touchend'].forEach(ev=>cv.addEventListener(ev,()=>{if(drawing)chk();drawing=false;}));
@@ -760,71 +769,50 @@ function syncVinyl(){const on=audio&&!audio.paused;rec.classList.toggle('spin',o
 vb.onclick=()=>{if(audio)audio.paused?audio.play():audio.pause();};
 onEnter.s10=syncVinyl;
 
-/* ---------- 11 letters ---------- */
-const LETTERS=[
- {tab:'Bhai mate',sal:'Dear Bhai,',txt:
-`Jyare thi yaad chhe, tame j e vyakti chho jena paase hu dodi ne jau. Be minute strict bano, ane pachhi chupchap badhu sambhali lo.
-
-Aa varas me tamne koi na pati banta joya, ane sachu kahu? Tamne bahu suit kare chhe. Tame vadhu shant thaya, vadhu prem-bharya thaya, ane phone saame jaine je smile karo chho ne, e mane dekhay chhe. Hu kyarey bhulva nahi dau. 😄
-
-Aatli saras jeevansathi pasand karva mate thank you. Ane mara bhai tarike hamesha pehla rehva mate pan.
-
-Haan, dar jhagda ma tamare mari side j levani, e rule ni koi expiry nathi.
-
-તું મારો ભાઈ છે, એ જ મારા માટે સૌથી મોટી ખુશી છે.
-
-Proud of you, always.`},
- {tab:'Bhabhi mate',sal:'Dear Dhruti Bhabhi,',txt:
-`Ek varas pehla tame kumkum na pagla padi ne, smile ma thodi ghabrahat lai ne aapna ghar ma aavya. Aa varas ma kyarek e ghabrahat hasi ma, moda-raat ni vato ma, inside jokes ma badlai gayi, ane have tame Bhai ne emna karta vadhare olkho chho.
-
-Bhai ne aatlo prem karva mate thank you: dhiraj thi, dil thi, ane e smile thi je aakha ghar ne roshan kari de chhe. Amara badha sathe adjust thava mate, ane e nani nani vastu mate jena mate koi thank you nathi kehtu, thank you.
-
-Aa varas mane khali bhabhi nahi, ek bahen mali. Ane haan, tamara kapda hu chokkas udhar laish. 😌
-
-તમે આવ્યાં અને અમારું ઘર વધારે ઘર જેવું લાગવા લાગ્યું. 🤍`},
- {tab:'Banne mate',sal:'Mara be favourite loko,',txt:
-`Ek varas pehla gaanth bandhai, saat pagla bharaya, ane aapne badha jetlu maniye ena karta vadhu radya hata.
-
-Tyar thi tame mane batavyu ke prem kevo dekhay jyare koi camera na hoy: chhello koliyo share karvo, nakama mudde ladvu, panch minute ma manai javu, ane chhata pan ek bija saame pehla divas ni jem jovu.
-
-Bijo varas pehla karta vadhu naram, vadhu masti-bharyo ane vadhu bharpur rahe. Saral divaso ma ane khaas kari ne aghra divaso ma, hamesha ek bija ne j pasand karjo.
-
-Ane haan, tamara ghar ma mara mate hamesha ek thaali ane ek jagya rakhjo. 😌
-
-હંમેશા આમ જ એકબીજાનો હાથ પકડીને હસતાં રહેજો.
-
-Happy 1st Anniversary!`}
+/* ---------- 11 game: kon vadhare ---------- */
+const QUIZ=[
+ ['Kon vadhare late taiyaar thay?','⏰'],
+ ['Kon pehla "sorry" kahe?','🙊'],
+ ['Kon vadhare bhukhyu thay?','🍕'],
+ ['TV remote kona haath ma hoy?','📺'],
+ ['Kon vadhare selfie le?','🤳'],
+ ['Gusso kone vadhare aave?','😤']
 ];
+const REACT=['Sachu j! 😂','Objection noted 🤭','Aa to badha jaane chhe 😄','Hmm… shaq hato j 🧐','Ha ha, pakdaya! 🙈','Agreed 💯'];
 (function(){
-  const envBtn=document.getElementById('envBtn'),envStage=document.getElementById('envStage'),letterStage=document.getElementById('letterStage');
-  const tabs=document.getElementById('tabs'),sal=document.getElementById('sal'),txt=document.getElementById('txt'),skip=document.getElementById('skip');
-  let timer=null,full='',pos=0;
-  LETTERS.forEach((L,i)=>{const b=document.createElement('button');b.className='tab';b.textContent=L.tab;b.onclick=()=>open(i);tabs.appendChild(b);});
-  function open(i){
-    [...tabs.children].forEach((b,k)=>b.classList.toggle('on',k===i));
-    sal.textContent=LETTERS[i].sal; full=LETTERS[i].txt+'\n\n— '+CONFIG.from; pos=0; clearInterval(timer); skip.hidden=false;
-    if(reduce){txt.textContent=full;skip.hidden=true;return;}
-    timer=setInterval(()=>{pos+=2;txt.innerHTML='';txt.textContent=full.slice(0,pos);const c=document.createElement('span');c.className='caret';txt.appendChild(c);
-      if(pos>=full.length){clearInterval(timer);txt.textContent=full;skip.hidden=true;}},28);
-  }
-  skip.onclick=()=>{clearInterval(timer);txt.textContent=full;skip.hidden=true;};
-  envBtn.onclick=()=>{envBtn.classList.add('open');setTimeout(()=>{envStage.hidden=true;letterStage.hidden=false;open(0);},1300);};
-  onEnter.s11=()=>{clearInterval(timer);envBtn.classList.remove('open');envStage.hidden=false;letterStage.hidden=true;};
+  const qt=document.getElementById('qText'),qn=document.getElementById('qNum'),qr=document.getElementById('qReact'),dots=document.getElementById('qDots');
+  const play=document.getElementById('qPlay'),endB=document.getElementById('qEnd');
+  let i=0,g=0,d=0,lock=false;
+  QUIZ.forEach(()=>dots.appendChild(document.createElement('i')));
+  function show(){qt.classList.remove('pop');void qt.offsetWidth;qt.classList.add('pop');qt.textContent=QUIZ[i][0]+' '+QUIZ[i][1];
+    qn.textContent=(i+1)+' / '+QUIZ.length;qr.textContent='';[...dots.children].forEach((x,k)=>x.classList.toggle('on',k<=i));lock=false;}
+  function fly(btn,emo){const r=btn.getBoundingClientRect(),e=document.createElement('span');e.className='flyemo';e.textContent=emo;
+    e.style.left=(r.left+r.width/2-16)+'px';e.style.top=(r.top)+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),1200);}
+  function finish(){play.hidden=true;endB.hidden=false;
+    document.getElementById('scG').textContent=g;document.getElementById('scD').textContent=d;
+    document.getElementById('qVerdict').textContent=g===d?'Barobar takkar! 💯':(g>d?CONFIG.groom:CONFIG.bride)+' jitya! 😂';burst(70);}
+  document.querySelectorAll('#s11 [data-w]').forEach(b=>b.onclick=()=>{
+    if(lock)return;lock=true;const w=b.dataset.w;
+    if(w==='g'||w==='x')g++; if(w==='d'||w==='x')d++;
+    b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit');fly(b,QUIZ[i][1]);
+    qr.textContent=REACT[(Math.random()*REACT.length)|0];burst(12);
+    setTimeout(()=>{i++;if(i<QUIZ.length)show();else finish();},1100);
+  });
+  function reset(){i=0;g=0;d=0;play.hidden=false;endB.hidden=true;show();}
+  document.getElementById('qAgain').onclick=reset;
+  reset();
 })();
 
 /* ---------- 12 wish jar ---------- */
 const NOTES=[
- "Tame banne saathe hov tyare aakho room vadhu garam lage chhe. 🤍",
  "Bhai, Bhabhi aavya pachhi tame vadhu hasta thaya chho. Notice karyu chhe!",
  "Bhabhi, Bhai na badha drama sahan karva mate tamne medal malvo joie. 🏅",
  "સદાય સુખી રહો, સદાય સાથે રહો.",
  "Ochha jhagda, vadhu chai saathe. ☕",
- "Ghana trips, ghana photos, ane hasva na ghana karan. ✈️",
  "Nazar na lage aa jodi ne. 🧿",
  "Gharda thaya pachhi pan aam j haath pakdi ne chaljo.",
  "ભગવાન તમારા ઘરમાં ખુશીઓની ભરમાર કરે.",
  "Aghra divase dhiraj, ane badha divase hasi.",
- "Tamari jodi joi ne amne pan prem par vishvas aave chhe.",
  "Jug jug jiyo, banne. ❤️"
 ];
 (function(){
@@ -846,14 +834,14 @@ const _go=go; go=function(i){ if(screens[cur].id==='s12'&&screens[i]?.id!=='s12'
 
 /* ---------- thank you cards ---------- */
 const THANKS=[
- ['Bhai','for always being my safe place','Nanpan thi aaj sudhi, tame hamesha mari dhaal banya. Dar mushkel vakhate pehlo phone tamne j karu chhu.','🛡️'],
- ['Bhabhi','for loving Bhai so beautifully','Emne aatla khush, aatla shant pehla kyarey nahota joya. E badhu tamara lidhe chhe.','💞'],
- ['Bhabhi','for becoming my sister','Tame khali bhabhi nahi, mari bahen, mari secret-keeper ane mari shopping partner banya.','👭'],
- ['Both of you','for making our home happier','Tamara aavya pachhi ghar ma hasi, vaato ane ronak bamni thai gayi chhe.','🏡'],
- ['Both of you','for every chai and late-night talk','E nani nani vaato, masti ane chai na cup mara mate sauthi kimti yaado chhe.','☕'],
- ['Bhai','for still taking my side','Lagna pachhi pan, dar jhagda ma. Ane haan, aa rule kyarey nahi badlay. 😄','🤝'],
- ['Both of you','for showing me what real love looks like','Saathe ubha rehvu, ek bija ne samajvu, ane dar divas ek bija ne pasand karvu.','❤️'],
- ['Both of you','for always keeping a place for me','Tamara ghar ma ane tamara dil ma, mara mate hamesha jagya rakhva mate.','🫶']
+ ['Bhai','for always being my safe place','Dar mushkel vakhate pehlo phone tamne j. 📞','🛡️'],
+ ['Bhabhi','for loving Bhai so beautifully','Bhai aatla khush pehla kyarey nahota! 😊','💞'],
+ ['Bhabhi','for becoming my friend','Tame khali bhabhi nahi, mari friend ane shopping partner banya. 🛍️','👭'],
+ ['Both of you','for making our home happier','Ghar ma hasi bamni thai gayi! 😄','🏡'],
+ ['Both of you','for every chai and late-night talk','E chai ane vaato, sauthi kimti. ☕','☕'],
+ ['Bhai','for still taking my side','Aa rule kyarey nahi badlay! 😄','🤝'],
+ ['Both of you','for showing me what real love looks like','Saathe rehvu, ek bija ne samajvu. ❤️','❤️'],
+ ['Both of you','for always keeping a place for me','Ghar ma ane dil ma, mara mate jagya. 🫶','🫶']
 ];
 (function(){
   const g=document.getElementById('tyGrid'),fin=document.getElementById('tyFinal'),seen=new Set();
