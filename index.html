@@ -792,11 +792,11 @@ const SHOTS=[
 ];
 (function(){
   const vf=document.getElementById('vf'), cap=document.getElementById('camCap'), cnt=document.getElementById('cnt'), fl=document.getElementById('flash');
-  const imgs=SHOTS.map(([f],i)=>{const im=new Image();im.src=`images/${f}.jpg`;im.alt='';if(i>1)im.loading='lazy';vf.insertBefore(im,cnt);return im;});
+  const imgs=SHOTS.map(([f],i)=>{const im=new Image();im.src=`images/${f}.jpg`;im.alt='';vf.insertBefore(im,cnt);return im;});
   let i=0; const seen=new Set(); let seenT=null;
-  function show(n,flash){clearTimeout(seenT);imgs[i].classList.remove('on');i=(n+imgs.length)%imgs.length;imgs[i].classList.add('on');cap.textContent=SHOTS[i][1];cnt.textContent=(i+1)+' / '+imgs.length;
+  function show(n,flash){imgs[i].classList.remove('on');i=(n+imgs.length)%imgs.length;imgs[i].classList.add('on');cap.textContent=SHOTS[i][1];cnt.textContent=(i+1)+' / '+imgs.length;
     if(flash){fl.classList.remove('go');void fl.offsetWidth;fl.classList.add('go');}
-    const k=i; seenT=setTimeout(()=>{if(screens[cur].id==='s4'){seen.add(k);G.camSeen=seen.size;refreshNext();}},400);}
+    if(screens[cur].id==='s4'){seen.add(i);G.camSeen=seen.size;refreshNext();}}
   show(0);
   onEnter.s4=()=>show(i);
   document.getElementById('shutter').onclick=()=>show(i+1,true);
